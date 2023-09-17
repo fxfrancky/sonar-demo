@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+    tools{
+        maven 'maven_3_6_3'
+    }
+    environment {
+    PATH = "/opt/maven/bin:$PATH"
+    JAVA_HOME = "/usr/lib/jvm/java-1.17.0-openjdk-amd64"
+    }
+    stages{
+        stage('Build Maven'){
+            steps{
+                sh 'mvn clean install'
+            }
+        }
+        stage('Sonar Qube analysis'){
+            steps{
+                    withSonarQubeEnv('sonarqube') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+    }
+
+}
